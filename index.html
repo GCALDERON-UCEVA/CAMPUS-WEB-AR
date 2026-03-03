@@ -14,7 +14,7 @@
             color: white;
         }
 
-        /* Header de 3 niveles */
+        /* Header de 3 niveles solicitado */
         #header-uceva {
             position: absolute;
             top: 25px;
@@ -24,65 +24,64 @@
             pointer-events: none;
         }
 
-            #header-uceva .titulo-principal {
-                font-size: 26px;
+            #header-uceva .linea1 {
+                font-size: 24px;
                 font-weight: 900;
                 letter-spacing: 4px;
                 margin: 0;
             }
 
-            #header-uceva .sub-uceva {
+            #header-uceva .linea2 {
                 font-size: 18px;
-                font-weight: 600;
-                margin: 5px 0 0 0;
+                font-weight: 700;
+                margin: 2px 0;
                 color: #eee;
             }
 
-            #header-uceva .sub-steam {
+            #header-uceva .linea3 {
                 font-size: 14px;
                 font-weight: 400;
-                margin: 2px 0 0 0;
-                color: #bbb;
+                margin: 0;
+                color: #aaa;
                 letter-spacing: 1px;
             }
 
-        /* Panel de Instrucciones Difuminado */
+        /* Panel de Instrucciones (Splash Screen) */
         #overlay-instrucciones {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 200;
-            backdrop-filter: blur(12px); /* Efecto difuminado */
-            -webkit-backdrop-filter: blur(12px);
+            z-index: 500; /* Por delante de todo */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transition: opacity 0.5s ease;
         }
 
         #modal-instrucciones {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             width: 85%;
-            max-width: 450px;
-            padding: 35px;
-            border-radius: 15px;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 12px;
             text-align: center;
         }
 
             #modal-instrucciones h2 {
-                font-size: 24px;
+                font-size: 22px;
                 margin-top: 0;
-                border-bottom: 1px solid #007f2f;
-                display: inline-block;
-                padding-bottom: 8px;
+                color: #007f2f;
             }
 
             #modal-instrucciones p {
-                font-size: 15px;
-                line-height: 1.6;
+                font-size: 14px;
+                line-height: 1.5;
                 margin: 20px 0;
                 text-align: left;
             }
@@ -91,61 +90,55 @@
             background: #007f2f;
             color: white;
             border: none;
-            padding: 12px 35px;
+            padding: 10px 30px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
         }
 
-        /* Botón AR Dinámico y con Colores Específicos */
+        /* Botón AR Dinámico */
         #enterar {
             position: absolute;
-            bottom: 60px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 15px 30px;
-            width: auto; /* Dinámico al texto */
-            min-width: 80px;
-            background: #8d8d8d; /* Gris por defecto (inactivo) */
+            padding: 12px 25px;
+            width: auto; /* Dinámico al contenido "AR" */
+            background: #8d8d8d; /* Gris inicial */
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-weight: 900;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             z-index: 100;
-            display: none; /* Se activa al cargar Unity */
-            transition: background-color 0.3s ease;
-        }
-
-        /* Barra de carga personalizada */
-        #unity-loading-bar {
-            position: absolute;
-            bottom: 25%;
-            width: 100%;
-            text-align: center;
             display: none;
         }
 
+        /* Barra de carga Verde */
+        #unity-loading-bar {
+            position: absolute;
+            bottom: 20%;
+            width: 100%;
+            text-align: center;
+            display: block;
+        }
+
         #unity-progress-bar-empty {
-            width: 250px;
-            height: 6px;
+            width: 200px;
+            height: 4px;
             background: #333;
             margin: auto;
-            border-radius: 10px;
-            overflow: hidden;
+            border-radius: 5px;
         }
 
         #unity-progress-bar-full {
             width: 0%;
             height: 100%;
             background: #007f2f;
-            transition: width 0.2s;
         }
 
-        /* Ocultar elementos de debug de WebXR template */
+        /* Limpieza de interfaz WebXR */
         #unity-footer, .webxr-checkbox, #unity-webxr-link {
             display: none !important;
         }
@@ -154,21 +147,22 @@
 <body>
     <div id="unity-container">
         <div id="header-uceva">
-            <div class="titulo-principal">CAMPUS WEB AR</div>
-            <div class="sub-uceva">UCEVA</div>
-            <div class="sub-steam">CENTRO STEAM+</div>
+            <div class="linea1">CAMPUS WEB AR</div>
+            <div class="linea2">UCEVA</div>
+            <div class="linea3">CENTRO STEAM+</div>
         </div>
 
         <div id="overlay-instrucciones">
             <div id="modal-instrucciones">
                 <h2>Instrucciones</h2>
                 <p>
-                    • Concede permiso de cámara cuando se solicite.<br>
-                    • Escanea una superficie plana (suelo o mesa).<br>
-                    • Toca la pantalla para situar la maqueta.<br>
-                    • Pellizca con dos dedos para escalar y rotar.
+                    • Concede permiso de cámara.<br>
+                    • Escanea el suelo moviendo el móvil.<br>
+                    • Toca para situar el campus.<br>
+                    • Usa dos dedos para rotar y escalar.
                 </p>
                 <button id="btn-cerrar-inst">ENTENDIDO</button>
+                <div id="timer-text" style="font-size: 10px; margin-top: 10px; color: #888;">Se cerrará en 5 segundos...</div>
             </div>
         </div>
 
@@ -180,15 +174,24 @@
             <div id="unity-progress-bar-empty">
                 <div id="unity-progress-bar-full"></div>
             </div>
-            <p style="font-size: 12px; margin-top: 10px;">Cargando experiencia...</p>
         </div>
     </div>
 
     <script>
-        // Control de Instrucciones
-        document.getElementById('btn-cerrar-inst').onclick = () => {
-            document.getElementById('overlay-instrucciones').style.display = 'none';
-        };
+        // FUNCIÓN PARA CERRAR INSTRUCCIONES
+        function cerrarModal() {
+            const overlay = document.getElementById('overlay-instrucciones');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 500);
+            }
+        }
+
+        // Autocierre en 5 segundos
+        setTimeout(cerrarModal, 5000);
+
+        // Cierre manual por botón
+        document.getElementById('btn-cerrar-inst').onclick = cerrarModal;
 
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/web.loader.js";
@@ -208,11 +211,16 @@
         var enterARButton = document.getElementById('enterar');
         var unityInstance = null;
 
-        loadingBar.style.display = "block";
-
         var script = document.createElement("script");
         script.src = loaderUrl;
         script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
                 progressBarFull.style.width = 100 * progress + "%";
-            }).then
+            }).then((instance) => {
+                unityInstance = instance;
+                loadingBar.style.display = "none";
+                enterARButton.style.display = "block";
+            });
+        };
+        document.body.appendChild(script);
+
