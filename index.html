@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Campus Web AR - UCEVA</title>
     <style>
-        /* Configuración Base */
         body {
             margin: 0;
             background-color: #000;
@@ -14,53 +13,53 @@
             color: white;
         }
 
-        /* Header de 3 niveles solicitado */
+        /* Header UCEVA 3 niveles */
         #header-uceva {
             position: absolute;
             top: 25px;
             width: 100%;
             text-align: center;
-            z-index: 10;
+            z-index: 100; /* Prioridad alta */
             pointer-events: none;
         }
 
-            #header-uceva .linea1 {
-                font-size: 24px;
-                font-weight: 900;
-                letter-spacing: 4px;
-                margin: 0;
-            }
+        .linea1 {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin: 0;
+        }
 
-            #header-uceva .linea2 {
-                font-size: 18px;
-                font-weight: 700;
-                margin: 2px 0;
-                color: #eee;
-            }
+        .linea2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 2px 0;
+            color: #eee;
+        }
 
-            #header-uceva .linea3 {
-                font-size: 14px;
-                font-weight: 400;
-                margin: 0;
-                color: #aaa;
-                letter-spacing: 1px;
-            }
+        .linea3 {
+            font-size: 14px;
+            font-weight: 400;
+            margin: 0;
+            color: #aaa;
+            letter-spacing: 1px;
+        }
 
-        /* Panel de Instrucciones (Splash Screen) */
+        /* Pantalla de Instrucciones */
         #overlay-instrucciones {
-            position: absolute;
+            position: fixed; /* Fixed para asegurar que cubra todo */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 500; /* Por delante de todo */
+            z-index: 999; /* Máxima prioridad */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
 
         #modal-instrucciones {
@@ -73,126 +72,115 @@
             text-align: center;
         }
 
-            #modal-instrucciones h2 {
-                font-size: 22px;
-                margin-top: 0;
-                color: #007f2f;
-            }
-
-            #modal-instrucciones p {
-                font-size: 14px;
-                line-height: 1.5;
-                margin: 20px 0;
-                text-align: left;
-            }
-
         #btn-cerrar-inst {
             background: #007f2f;
             color: white;
             border: none;
-            padding: 10px 30px;
+            padding: 12px 35px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 15px;
         }
 
-        /* Botón AR Dinámico */
+        /* Botón AR */
         #enterar {
             position: absolute;
             bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 12px 25px;
-            width: auto; /* Dinámico al contenido "AR" */
-            background: #8d8d8d; /* Gris inicial */
+            padding: 12px 30px;
+            background: #8d8d8d; /* Gris por defecto */
             color: white;
             border: none;
             border-radius: 6px;
             font-weight: 900;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 100;
-            display: none;
+            font-size: 22px;
+            z-index: 200;
+            display: none; /* Se activa tras carga */
         }
 
-        /* Barra de carga Verde */
+        /* Barra de carga */
         #unity-loading-bar {
             position: absolute;
             bottom: 20%;
             width: 100%;
             text-align: center;
-            display: block;
+            z-index: 50;
         }
 
         #unity-progress-bar-empty {
             width: 200px;
-            height: 4px;
+            height: 5px;
             background: #333;
             margin: auto;
-            border-radius: 5px;
+            border-radius: 10px;
         }
 
         #unity-progress-bar-full {
             width: 0%;
             height: 100%;
             background: #007f2f;
+            transition: width 0.2s;
         }
 
-        /* Limpieza de interfaz WebXR */
+        /* Limpieza visual de logos */
         #unity-footer, .webxr-checkbox, #unity-webxr-link {
             display: none !important;
         }
     </style>
 </head>
 <body>
+    <div id="header-uceva">
+        <div class="linea1">CAMPUS WEB AR</div>
+        <div class="linea2">UCEVA</div>
+        <div class="linea3">CENTRO STEAM+</div>
+    </div>
+
+    <div id="overlay-instrucciones">
+        <div id="modal-instrucciones">
+            <h2 style="color:#007f2f; margin-top:0;">Instrucciones</h2>
+            <p style="text-align:left; font-size:14px; line-height:1.6;">
+                • Permite el uso de la cámara.<br>
+                • Mueve el móvil para detectar el suelo.<br>
+                • Toca para situar el campus.<br>
+                • Usa dos dedos para rotar y escalar.
+            </p>
+            <button id="btn-cerrar-inst">ENTENDIDO</button>
+            <p id="timer-msg" style="font-size:10px; color:#888; margin-top:10px;">Cerrando automáticamente...</p>
+        </div>
+    </div>
+
     <div id="unity-container">
-        <div id="header-uceva">
-            <div class="linea1">CAMPUS WEB AR</div>
-            <div class="linea2">UCEVA</div>
-            <div class="linea3">CENTRO STEAM+</div>
-        </div>
-
-        <div id="overlay-instrucciones">
-            <div id="modal-instrucciones">
-                <h2>Instrucciones</h2>
-                <p>
-                    • Concede permiso de cámara.<br>
-                    • Escanea el suelo moviendo el móvil.<br>
-                    • Toca para situar el campus.<br>
-                    • Usa dos dedos para rotar y escalar.
-                </p>
-                <button id="btn-cerrar-inst">ENTENDIDO</button>
-                <div id="timer-text" style="font-size: 10px; margin-top: 10px; color: #888;">Se cerrará en 5 segundos...</div>
-            </div>
-        </div>
-
-        <canvas id="unity-canvas" style="width: 100%; height: 100%;"></canvas>
-
+        <canvas id="unity-canvas" style="width: 100%; height: 100%; background: #000;"></canvas>
         <button id="enterar">AR</button>
-
         <div id="unity-loading-bar">
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
+            <div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div>
         </div>
     </div>
 
     <script>
-        // FUNCIÓN PARA CERRAR INSTRUCCIONES
-        function cerrarModal() {
-            const overlay = document.getElementById('overlay-instrucciones');
+        // 1. LÓGICA DE CIERRE (FORZADA)
+        const overlay = document.getElementById('overlay-instrucciones');
+        const btnCerrar = document.getElementById('btn-cerrar-inst');
+
+        function removerInstrucciones() {
             if (overlay) {
                 overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; }, 500);
+                setTimeout(() => {
+                    overlay.style.visibility = 'hidden';
+                    overlay.style.display = 'none';
+                }, 500);
             }
         }
 
-        // Autocierre en 5 segundos
-        setTimeout(cerrarModal, 5000);
+        // Autocierre en 5 segundos exactos
+        setTimeout(removerInstrucciones, 5000);
 
-        // Cierre manual por botón
-        document.getElementById('btn-cerrar-inst').onclick = cerrarModal;
+        // Cierre manual
+        btnCerrar.onclick = removerInstrucciones;
 
+        // 2. CONFIGURACIÓN UNITY
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/web.loader.js";
         var config = {
@@ -220,7 +208,26 @@
                 unityInstance = instance;
                 loadingBar.style.display = "none";
                 enterARButton.style.display = "block";
-            });
+            }).catch((err) => { console.error(err); });
         };
         document.body.appendChild(script);
 
+        // 3. LÓGICA DE BOTÓN AR DINÁMICO
+        document.addEventListener('onARSupportedCheck', function (event) {
+            if (event.detail.supported) {
+                enterARButton.disabled = false;
+                enterARButton.style.backgroundColor = "#007f2f"; // Verde
+                enterARButton.style.cursor = "pointer";
+            } else {
+                enterARButton.disabled = true;
+                enterARButton.style.backgroundColor = "#8d8d8d"; // Gris
+                enterARButton.style.cursor = "not-allowed";
+            }
+        }, false);
+
+        enterARButton.addEventListener('click', function () {
+            if (unityInstance) unityInstance.Module.WebXR.toggleAR();
+        });
+    </script>
+</body>
+</html>
