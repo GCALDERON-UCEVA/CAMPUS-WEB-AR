@@ -1,128 +1,195 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="es-co">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Visualizador Campus AR | Laura Salinas</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+    <title>Campus Web AR - UCEVA</title>
     <style>
-        /* Identidad visual UCEVA */
+        /* Configuración Base */
         body {
-            background-color: #0b0b0b;
-            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: #000;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+            color: white;
         }
 
-        /* Título superior de la experiencia */
+        /* Header de 3 niveles */
         #header-uceva {
             position: absolute;
-            top: 20px;
+            top: 25px;
             width: 100%;
             text-align: center;
-            color: white;
             z-index: 10;
             pointer-events: none;
         }
 
-            #header-uceva h1 {
-                font-size: 18px;
-                letter-spacing: 2px;
+            #header-uceva .titulo-principal {
+                font-size: 26px;
+                font-weight: 900;
+                letter-spacing: 4px;
                 margin: 0;
-                text-transform: uppercase;
             }
 
-            #header-uceva p {
-                font-size: 12px;
-                color: #aaa;
-                margin: 5px 0;
+            #header-uceva .sub-uceva {
+                font-size: 18px;
+                font-weight: 600;
+                margin: 5px 0 0 0;
+                color: #eee;
             }
 
-        /* BOTÓN DINÁMICO: Se ajusta al texto */
+            #header-uceva .sub-steam {
+                font-size: 14px;
+                font-weight: 400;
+                margin: 2px 0 0 0;
+                color: #bbb;
+                letter-spacing: 1px;
+            }
+
+        /* Panel de Instrucciones Difuminado */
+        #overlay-instrucciones {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            backdrop-filter: blur(12px); /* Efecto difuminado */
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        #modal-instrucciones {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 85%;
+            max-width: 450px;
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+            #modal-instrucciones h2 {
+                font-size: 24px;
+                margin-top: 0;
+                border-bottom: 1px solid #007f2f;
+                display: inline-block;
+                padding-bottom: 8px;
+            }
+
+            #modal-instrucciones p {
+                font-size: 15px;
+                line-height: 1.6;
+                margin: 20px 0;
+                text-align: left;
+            }
+
+        #btn-cerrar-inst {
+            background: #007f2f;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        /* Botón AR Dinámico y con Colores Específicos */
         #enterar {
             position: absolute;
-            bottom: 100px;
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 15px 40px; /* Espaciado interno */
-            width: auto; /* ANCHO DINÁMICO */
-            min-width: 200px;
-            white-space: nowrap; /* Evita que el texto se parta en dos líneas */
-            background: #ffffff;
-            color: #000;
+            padding: 15px 30px;
+            width: auto; /* Dinámico al texto */
+            min-width: 80px;
+            background: #8d8d8d; /* Gris por defecto (inactivo) */
+            color: white;
             border: none;
-            border-radius: 5px; /* Estética más técnica/arquitectónica */
-            font-weight: 800;
-            font-size: 14px;
+            border-radius: 5px;
+            font-weight: 900;
+            font-size: 18px;
             cursor: pointer;
             z-index: 100;
-            transition: all 0.3s ease;
-            display: inline-block;
+            display: none; /* Se activa al cargar Unity */
+            transition: background-color 0.3s ease;
         }
 
-        /* ESPACIO DE INSTRUCCIONES */
-        #instructions-box {
+        /* Barra de carga personalizada */
+        #unity-loading-bar {
             position: absolute;
-            top: 50%;
-            left: 20px;
-            transform: translateY(-50%);
-            width: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-left: 3px solid #fff;
-            padding: 20px;
-            color: white;
-            font-size: 13px;
-            line-height: 1.6;
-            pointer-events: none;
+            bottom: 25%;
+            width: 100%;
+            text-align: center;
+            display: none;
         }
-    </style>
 
-    <div id="header-uceva">
-        <h1>Campus Web AR</h1>
-        <p>Centro Steam+ - UCEVA</p>
-    </div>
+        #unity-progress-bar-empty {
+            width: 250px;
+            height: 6px;
+            background: #333;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    <div id="instructions-box">
-        <strong>INSTRUCCIONES:</strong><br><br>
-        1. Escanea el suelo con tu cámara.<br>
-        2. Toca para fijar el campus.<br>
-        3. Usa dos dedos para rotar y escalar.
-    </div>
+        #unity-progress-bar-full {
+            width: 0%;
+            height: 100%;
+            background: #007f2f;
+            transition: width 0.2s;
+        }
 
-    /* Ocultar VR si no lo vas a usar */
-    #entervr {
-    display: none;
-    }
-
-    /* Ajuste de la barra de carga */
-    #unity-progress-bar-full {
-    background: #ffffff !important;
-    }
+        /* Ocultar elementos de debug de WebXR template */
+        #unity-footer, .webxr-checkbox, #unity-webxr-link {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
     <div id="unity-container">
-        <div id="unity-canvas-container" style="width: 100%; height: 100%;">
-            <canvas id="unity-canvas" style="width: 100%; height: 100%;"></canvas>
+        <div id="header-uceva">
+            <div class="titulo-principal">CAMPUS WEB AR</div>
+            <div class="sub-uceva">UCEVA</div>
+            <div class="sub-steam">CENTRO STEAM+</div>
         </div>
 
-        <button id="enterar" disabled>INICIAR EXPERIENCIA AR</button>
-        <button id="entervr" disabled>VR</button>
-
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
+        <div id="overlay-instrucciones">
+            <div id="modal-instrucciones">
+                <h2>Instrucciones</h2>
+                <p>
+                    • Concede permiso de cámara cuando se solicite.<br>
+                    • Escanea una superficie plana (suelo o mesa).<br>
+                    • Toca la pantalla para situar la maqueta.<br>
+                    • Pellizca con dos dedos para escalar y rotar.
+                </p>
+                <button id="btn-cerrar-inst">ENTENDIDO</button>
             </div>
         </div>
 
-        <div id="unity-footer">
-            <div id="unity-build-title">Campus Universitario - Arquitectura Digital</div>
+        <canvas id="unity-canvas" style="width: 100%; height: 100%;"></canvas>
+
+        <button id="enterar">AR</button>
+
+        <div id="unity-loading-bar">
+            <div id="unity-progress-bar-empty">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+            <p style="font-size: 12px; margin-top: 10px;">Cargando experiencia...</p>
         </div>
     </div>
 
     <script>
+        // Control de Instrucciones
+        document.getElementById('btn-cerrar-inst').onclick = () => {
+            document.getElementById('overlay-instrucciones').style.display = 'none';
+        };
+
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/web.loader.js";
         var config = {
@@ -135,10 +202,10 @@
             productVersion: "1.0",
         };
 
-        var container = document.querySelector("#unity-container");
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-loading-bar");
         var progressBarFull = document.querySelector("#unity-progress-bar-full");
+        var enterARButton = document.getElementById('enterar');
         var unityInstance = null;
 
         loadingBar.style.display = "block";
@@ -148,30 +215,4 @@
         script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
                 progressBarFull.style.width = 100 * progress + "%";
-            }).then((instance) => {
-                unityInstance = instance;
-                loadingBar.style.display = "none";
-            }).catch((message) => {
-                alert("Error al cargar la maqueta: " + message);
-            });
-        };
-        document.body.appendChild(script);
-
-        let enterARButton = document.getElementById('enterar');
-        let enterVRButton = document.getElementById('entervr');
-
-        document.addEventListener('onARSupportedCheck', function (event) {
-            enterARButton.disabled = !event.detail.supported;
-            if (event.detail.supported) {
-                enterARButton.innerHTML = "VER CAMPUS EN TU ESPACIO";
-            } else {
-                enterARButton.innerHTML = "AR NO SOPORTADO";
-            }
-        }, false);
-
-        enterARButton.addEventListener('click', function (event) {
-            unityInstance.Module.WebXR.toggleAR();
-        }, false);
-    </script>
-</body>
-</html>
+            }).then
