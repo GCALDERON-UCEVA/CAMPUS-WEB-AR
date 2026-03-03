@@ -8,69 +8,97 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
-        /* Estilos para limpiar la interfaz */
+        /* Identidad visual UCEVA */
         body {
-            background-color: #0f0f0f;
-            overflow: hidden;
-        }
-
-        #unity-footer {
-            background: rgba(0, 0, 0, 0.7) !important;
-            backdrop-filter: blur(5px);
-            height: 60px !important;
-        }
-
-        /* Ocultar logos innecesarios de Unity */
-        #unity-webgl-logo, #unity-webxr-link {
-            display: none !important;
-        }
-
-        #unity-build-title {
-            color: white;
+            background-color: #0b0b0b;
             font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
         }
 
-        /* Estilo moderno para el botón AR */
+        /* Título superior de la experiencia */
+        #header-uceva {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+            #header-uceva h1 {
+                font-size: 18px;
+                letter-spacing: 2px;
+                margin: 0;
+                text-transform: uppercase;
+            }
+
+            #header-uceva p {
+                font-size: 12px;
+                color: #aaa;
+                margin: 5px 0;
+            }
+
+        /* BOTÓN DINÁMICO: Se ajusta al texto */
         #enterar {
             position: absolute;
-            bottom: 80px; /* Separado del borde */
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 12px 25px;
+            padding: 15px 40px; /* Espaciado interno */
+            width: auto; /* ANCHO DINÁMICO */
+            min-width: 200px;
+            white-space: nowrap; /* Evita que el texto se parta en dos líneas */
             background: #ffffff;
             color: #000;
             border: none;
-            border-radius: 30px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-radius: 5px; /* Estética más técnica/arquitectónica */
+            font-weight: 800;
+            font-size: 14px;
             cursor: pointer;
             z-index: 100;
             transition: all 0.3s ease;
+            display: inline-block;
         }
 
-            #enterar:disabled {
-                background: #333;
-                color: #777;
-                cursor: not-allowed;
-            }
-
-            #enterar:hover:not(:disabled) {
-                background: #e0e0e0;
-                transform: translateX(-50%) scale(1.05);
-            }
-
-        /* Ocultar VR si no lo vas a usar */
-        #entervr {
-            display: none;
+        /* ESPACIO DE INSTRUCCIONES */
+        #instructions-box {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-left: 3px solid #fff;
+            padding: 20px;
+            color: white;
+            font-size: 13px;
+            line-height: 1.6;
+            pointer-events: none;
         }
+    </style>
 
-        /* Ajuste de la barra de carga */
-        #unity-progress-bar-full {
-            background: #ffffff !important;
-        }
+    <div id="header-uceva">
+        <h1>Campus Web AR</h1>
+        <p>Centro Steam+ - UCEVA</p>
+    </div>
+
+    <div id="instructions-box">
+        <strong>INSTRUCCIONES:</strong><br><br>
+        1. Escanea el suelo con tu cámara.<br>
+        2. Toca para fijar el campus.<br>
+        3. Usa dos dedos para rotar y escalar.
+    </div>
+
+    /* Ocultar VR si no lo vas a usar */
+    #entervr {
+    display: none;
+    }
+
+    /* Ajuste de la barra de carga */
+    #unity-progress-bar-full {
+    background: #ffffff !important;
+    }
     </style>
 </head>
 <body>
